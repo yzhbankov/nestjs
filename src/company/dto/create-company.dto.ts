@@ -1,4 +1,4 @@
-import { IsDate, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
 
 export class CreateCompanyDto {
     @IsString()
@@ -10,8 +10,8 @@ export class CreateCompanyDto {
     @IsNotEmpty()
     public readonly name: string;
 
-    @IsDate()
-    public readonly createdAt: Date;
+    @IsString()
+    public createdAt: string;
 
     @IsString()
     @MaxLength(60)
