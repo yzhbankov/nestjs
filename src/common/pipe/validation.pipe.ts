@@ -10,7 +10,7 @@ export class CustomValidationPipe implements PipeTransform<any> {
         }
 
         const object: any = plainToClass(metatype, value);
-        const errors: any[] = await validate(object, { skipMissingProperties: true });
+        const errors: any[] = await validate(object);
         if (errors.length > 0) {
             const message: string = errors.map(error => JSON.stringify(error)).join('');
             throw new BadRequestException(`Validation error. ${message}`);

@@ -5,7 +5,7 @@ import { ArgumentMetadata, BadRequestException, Injectable, PipeTransform } from
 export class ParseDatePipe implements PipeTransform<string, number> {
     public transform(value: any, metadata: ArgumentMetadata) {
         const newVal: any = {...value};
-        newVal.createdAt = new Date(newVal.value);
+        newVal.createdAt = new Date(newVal.createdAt);
         if (isNaN(newVal.createdAt.getTime())) {
             throw new BadRequestException('Validation failed');
         }

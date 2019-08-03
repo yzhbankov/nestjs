@@ -1,6 +1,6 @@
 import {
     Body, Controller, Delete, Get, Header, HttpCode, Next, NotFoundException, Param, Post, Put, Query,
-    Req, Res, UnprocessableEntityException, UsePipes
+    Req, Res, SetMetadata, UnprocessableEntityException, UseGuards, UseInterceptors, UsePipes
 } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 
@@ -9,7 +9,14 @@ import { CompanyService } from './company.service';
 import { CreateCompanyDto, UpdateCompanyDto } from './dto/create-company.dto';
 import { Company } from './models/company.model';
 import { ParseDatePipe } from '../common/pipe/parse-date.pipe';
+import { RoleGuard } from '../common/guard/role.guard';
+import { LoggingInterceptor } from '../common/interceptor/logging.interceptor';
+import { TransformInterceptor } from '../common/interceptor/transform.interceptor';
 
+
+@UseGuards(RoleGuard)
+@UseInterceptors(LoggingInterceptor)
+@UseInterceptors(TransformInterceptor)
 @Controller('company')
 export class CompanyController {
     public constructor(private readonly companyService: CompanyService) { }
@@ -33,9 +40,8 @@ export class CompanyController {
     @Post('/')
     @HttpCode(202)
     @UsePipes(new ParseDatePipe())
+    @SetMetadata('roles', ['admin'])
     public async create(@Body() body: CreateCompanyDto): Promise<Company> {
-        console.log('body');
-        console.log(body);
         const companyExist: Company = await this.companyService.find(body.uid);
         if (companyExist) {
             throw new UnprocessableEntityException('The company with this uid already exist');
